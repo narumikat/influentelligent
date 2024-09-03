@@ -1,0 +1,87 @@
+<div class="mt-4">
+  <% if user_signed_in? %>
+    <div class="container">
+      <div class="row d-flex align-items-stretch">
+        <div class="col-md-5">
+          <div class="influencer-profile-container bg-white">
+            <div class="row d-flex justify-content-center">
+              <% if @user.avatar.present? %>
+                <%= image_tag @user.avatar, class: "profile-photo" %>
+              <% else %>
+                <%= image_tag 'user-photo.png', class: "profile-photo" %>
+              <% end %>
+              <h4 class="text-center mt-4"><strong><%= @user.first_name.capitalize %> <%= @user.last_name&.capitalize %></strong></h4>
+              <div class="d-flex justify-content-center">
+                <span class="category-influencer"> <% if @user.tags.any? %>
+                    <% @user.tags.each do |tag| %>
+                      <span class="tag"><%= tag %></span>
+                    <% end %>
+                  <% else %>
+                    <p>No tags available.</p>
+                  <% end %></span>
+              </div>
+              <div class="social-icons-prof d-flex justify-content-center mt-4">
+                <% social_icons = {
+                    'twitter' => 'fa-x-twitter',
+                    'tiktok' => 'fa-tiktok',
+                    'instagram' => 'fa-instagram',
+                    'youtube' => 'fa-youtube'
+                  } %>
+                <% base_urls = {
+                  'twitter' => 'https://x.com/',
+                  'tiktok' => 'https://www.tiktok.com/@',
+                  'instagram' => 'https://www.instagram.com/',
+                  'youtube' => 'https://www.youtube.com/@'
+                } %>
+                <% if @user.social_links.present? %>
+                  <% social_icons.each do |platform, icon| %>
+                    <% if @user.social_links[platform].present? %>
+                      <% url = "#{base_urls[platform]}#{@user.social_links[platform]}" %>
+                      <%= link_to url, target: "_blank" do %>
+                        <i class="fa-brands <%= icon %> mx-2"></i>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </div>
+              <div class="bg-gray my-4">
+                <p><strong>About Me:</strong></p>
+                <p><%= @user.about %></p>
+              </div>
+              <div class="bg-gray my-4">
+                <p><strong>I'm available on:</strong></p>
+                <p><%= @user.availability %></p>
+              </div>
+              <div class="bg-gray mt-4">
+                <p><strong>Contact:</strong></p>
+                <p><i class="fa-solid fa-envelope"></i> <%= @user.email %></p>
+                <p><i class="fa-solid fa-globe"></i> <%= @user.website   %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md row d-flex">
+          <%= render 'components/icons_card', user: @user %>
+          <div class="bg-white m-2 activity-container">
+            <h3>Activity:</h3>
+            <div class="m-4 border-container">
+              <h4 class="mb-4">Last Accepted Collaborations:</h4>
+              <% last_accepted_submissions = @user.submissions.confirmed.order(created_at: :desc).last(3) %>
+              <% if last_accepted_submissions.present? %>
+                <% last_accepted_submissions.each_with_index do |submission, index| %>
+                  <div class="d-flex pb-2 mb-2 justify-content-between <%= 'border-bottom' unless index == last_accepted_submissions.size - 1 %>">
+                    <%= link_to submission.collaboration.title, collaboration_path(submission.collaboration) %>
+                    <span><%= submission.updated_at.strftime("%d %b %Y") %></span>
+                  </div>
+                <% end %>
+              <% else %>
+                <p>No accepted collaborations yet.</p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <p>Login first</p>
+      <% end %>
+    </div>
+  </div>

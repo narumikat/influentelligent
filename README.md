@@ -1,0 +1,1 @@
+Influenteligent connects influencers with brands for mutually beneficial partnerships, allowing influencers to promote brands and companies to reach their target audience through collaborations.
